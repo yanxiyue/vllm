@@ -358,7 +358,8 @@ class PagedAttentionWithALiBi(PagedAttention):
             # here. We find that both biases give the same results, but
             # the bias below more accurately follows the original ALiBi
             # paper.
-            bias = bias[None, :] - bias[:, None]
+            #bias = bias[None, :] - bias[:, None]
+            bias = bias[None, :].repeat(prompt_len, 1)
             bias = bias.to(self.alibi_slopes.device)
 
             # When using custom attention bias, xformers requires the bias to
