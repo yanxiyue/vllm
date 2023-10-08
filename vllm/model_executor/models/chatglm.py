@@ -118,7 +118,6 @@ class MLP(torch.nn.Module):
             config.ffn_hidden_size * 2,
             bias=self.add_bias,
             gather_output=False,
-            perform_initialization=False,
             params_dtype=config.torch_dtype)
 
         def swiglu(x):
@@ -132,7 +131,6 @@ class MLP(torch.nn.Module):
                                                config.hidden_size,
                                                bias=self.add_bias,
                                                input_is_parallel=True,
-                                               perform_initialization=False,
                                                params_dtype=config.torch_dtype)
 
     def forward(self, hidden_states):
@@ -217,7 +215,6 @@ class SelfAttention(torch.nn.Module):
             self.qkv_hidden_size,
             bias=config.add_bias_linear or config.add_qkv_bias,
             gather_output=False,
-            perform_initialization=False,
             params_dtype=config.torch_dtype)
 
         # num_kv_heads=self.num_multi_query_groups_per_partition
@@ -230,7 +227,6 @@ class SelfAttention(torch.nn.Module):
                                        config.hidden_size,
                                        bias=config.add_bias_linear,
                                        input_is_parallel=True,
-                                       perform_initialization=False,
                                        params_dtype=config.torch_dtype)
 
     def forward(
@@ -478,7 +474,6 @@ class ChatGLMModel(torch.nn.Module):
         self.embedding = VocabParallelEmbedding(
             config.vocab_size,
             config.hidden_size,
-            perform_initialization=False,
             params_dtype=config.torch_dtype)
 
         self.num_layers = config.num_layers
@@ -496,7 +491,6 @@ class ChatGLMModel(torch.nn.Module):
             config.vocab_size,
             bias=False,
             gather_output=False,
-            perform_initialization=False,
             params_dtype=config.torch_dtype)
 
         self.sampler = Sampler(config.vocab_size)
