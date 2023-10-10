@@ -74,18 +74,25 @@ class OPTAttention(nn.Module):
         self.head_dim = embed_dim // total_num_heads
         self.scaling = self.head_dim**-0.5
 
-        self.qkv_proj = ColumnParallelLinear(
-            embed_dim,
-            3 * embed_dim,
-            bias=bias,
-            gather_output=False,
-        )
-        self.out_proj = RowParallelLinear(
-            embed_dim,
-            embed_dim,
-            bias=bias,
-            input_is_parallel=True,
-        )
+#        self.qkv_proj = ColumnParallelLinear(
+#            embed_dim,
+#            3 * embed_dim,
+#            bias=bias,
+#            gather_output=False,
+#        )
+
+#        self.out_proj = RowParallelLinear(
+#            embed_dim,
+#            embed_dim,
+#            bias=bias,
+#            input_is_parallel=True,
+#        )
+        self.k_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+        self.v_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+        self.q_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+
+        self.out_proj = nn.Linear(embed_dim, embed_dim, bias=bias)
+
         self.attn = PagedAttention(self.num_heads,
                                    self.head_dim,
                                    scale=self.scaling)
